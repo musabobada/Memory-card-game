@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Memory Card Game</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        h1 {
+            margin: 0 auto 30px;
+            width: fit-content;
+            font-weight: 900;
+            font-size: 50px;
+        }
+
+        #memory_board {
+            background-color: #ccc;
+            width: 710px;
+            height: 490px;
+            padding: 25px;
+            margin: 0px auto;
+        }
+
+        #memory_board>div {
+            background: #00f;
+            width: 100px;
+            height: 100px;
+            float: left;
+            margin: 5px;
+            padding: 20px;
+            font-size: 64px;
+            cursor: pointer;
+            text-align: center;
+        }
+    </style>
+    <script>var memory_array = [
+            "A",
+            "A",
+            "B",
+            "B",
+            "C",
+            "C",
+            "D",
+            "D",
+            "E",
+            "E",
+            "F",
+            "F",
+            "G",
+            "G",
+            "H",
+            "H",
+            "I",
+            "I",
+            "J",
+            "J",
+            "K",
+            "K",
+            "L",
+            "L",
+        ];
+        var memory_values = [];
+        var memory_tile_ids = [];
+        var titles_flipped = 0;
+        Array.prototype.memory_tile_shuffle = function () {
+            var i = this.length,
+                j,
+                temp;
+            while (--i > 0) {
+                j = Math.floor(Math.random() * (i + 1));
+                temp = this[j];
+                this[j] = this[i];
+                this[i] = temp;
+            }
+        };
+        function newBoard() {
+            titles_flipped = 0;
+            var output = "";
+            memory_array.memory_tile_shuffle();
+            for (var i = 0; i < memory_array.length; i++) {
+                output += `<div id="tile_${i}" onclick="memoryFlipTile(this,memory_array[${i}])"></div>`;
+            }
+            document.getElementById("memory_board").innerHTML = output;
+        }
+        function memoryFlipTile(tile, val) {
+            if (tile.innerHTML == "" && memory_values.length < 2) {
+                tile.style.background = "#fff";
+                tile.innerHTML = val;
+                if (memory_values.length == 0) {
+                    memory_values.push(val);
+                    memory_tile_ids.push(tile.id);
+                } else if (memory_values.length == 1) {
+                    memory_values.push(val);
+                    memory_tile_ids.push(tile.id);
+                    if (memory_values[0] == memory_values[1]) {
+                        titles_flipped += 2;
+                        memory_values = [];
+                        memory_tile_ids = [];
+                        var element = document.getElementsByTagName("h1")[0];
+                        if (titles_flipped == memory_array.length) {
+                            element.innerHTML = "Congrats! ";
+                            setTimeout(function () {
+                                element.innerHTML += "."
+                            }, 1000)
+                            setTimeout(function () {
+                                element.innerHTML += "."
+                            }, 2000)
+                            setTimeout(function () {
+                                element.innerHTML += "."
+                            }, 3000)
+                            setTimeout(function () {
+                                element.innerHTML = "Memory Card Game"
+                                newBoard()
+                            }, 4000)
+                        }
+                    } else {
+                        function filp2back() {
+                            var tile_1 = document.getElementById(memory_tile_ids[0]);
+                            var tile_2 = document.getElementById(memory_tile_ids[1]);
+                            tile_1.style.background = "#00f";
+                            tile_1.innerHTML = "";
+                            tile_2.style.background = "#00f";
+                            tile_2.innerHTML = "";
+                            memory_values = [];
+                            memory_tile_ids = [];
+                        }
+                        setTimeout(filp2back, 750);
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="wrap">
+
+        <h1>Memory Card Game</h1>
+        <div id="memory_board">
+        </div>
+    </div>
+    <script>newBoard();</script>
+</body>
+
+</html>
